@@ -16,7 +16,7 @@ from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 load_dotenv()
 
-from playing_script import search_for_track_id, start_playback
+from playing_script import player_client
 
 
 @function_tool
@@ -40,14 +40,19 @@ def play_spotify_track(spotify_query: str):
 
     logging.info(f"Spotify query: {spotify_query}")
 
-    track_info = search_for_track_id(spotify_query, limit=1)
-    start_playback(track_info[0]["id"])
+    track_info = player_client.search_for_track_id(spotify_query, limit=1)
+    player_client.start_playback(track_info[0]["id"])
+
+
+@function_tool
+def stop_playback():
+    player_client.stop_current_playback()
 
 
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(
-            tools=[play_spotify_track],
+            tools=[play_spotify_track, stop_playback],
             instructions="""
                 You are a helpful assistant.
                 Your only task is to produce queries to search for the spotify tracks.
@@ -59,6 +64,8 @@ class Assistant(Agent):
 
                 You need to produce the queries to spotify based of what you receive from user.
                 User speaks in natural language. You produce queries.
+
+                Else: if user wants to stop the playback - use the stop playback tool.
             """,
         )
 
