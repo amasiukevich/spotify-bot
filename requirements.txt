@@ -1,3 +1,10 @@
-black
-mypy
+spotipy
+python-dotenv
+fastapi
+uvicorn
+python-multipart
+Flask
+spotipy
+openai
 pre-commit
+types-requests

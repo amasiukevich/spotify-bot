@@ -6,6 +6,15 @@ dist/
 wheels/
 *.egg-info
 
+# caches
+.cache
+.spotify_token_cache
+
 # Virtual environments
 .venv
 .mypy_cache/
+.env
+
+# certificates
+*.pem
+*.cnf
