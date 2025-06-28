@@ -9,7 +9,7 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
-REDIRECT_URI = "https://b3ea-212-75-103-72.ngrok-free.app/callback"  # ← your ngrok HTTPS URL     # ← no port here! ngrok maps 443→5000
+REDIRECT_URI = "https://1f27-212-75-103-72.ngrok-free.app/callback"  # ← your ngrok HTTPS URL     # ← no port here! ngrok maps 443→5000
 
 SCOPE = "user-read-playback-state user-modify-playback-state"
 
@@ -53,46 +53,35 @@ def search_for_track_id(query, market="US", limit=10):
     return tracks_info
 
 
-### TODO: Implement tools for that
-
-print("--- Searching for a song by title and artist ---")
-search_query = "track:Crazy Little Thing Called Love artist:Queen"
-found_tracks = search_for_track_id(search_query, limit=3)
-
-if found_tracks:
-    for track in found_tracks:
-        print(f"Track: {track['name']}, Artist: {track['artist']}, ID: {track['id']}")
-else:
-    print(f"No tracks found for '{search_query}'")
-
-print("\n--- Searching for a song by general keywords ---")
-search_query_general = "Shape of You Ed Sheeran"
-found_tracks_general = search_for_track_id(search_query_general, limit=1)
-
-if found_tracks_general:
-    for track in found_tracks_general:
-        print(f"Track: {track['name']}, Artist: {track['artist']}, ID: {track['id']}")
-else:
-    print(f"No tracks found for '{search_query_general}'")
-
-print("\n--- Searching for tracks by genre and year range ---")
-# Note: Genre search primarily works for artists and tracks.
-# The `genre:` filter applies to the artists associated with the tracks.
-search_query_genre = "genre:jazz year:1960-1970"
-found_tracks_genre = search_for_track_id(search_query_genre, limit=5)
-
-if found_tracks_genre:
-    for track in found_tracks_genre:
-        print(f"Track: {track['name']}, Artist: {track['artist']}, ID: {track['id']}")
-else:
-    print(f"No tracks found for '{search_query_genre}'")
-
-
 def start_playback(song_id: str):
     sp.start_playback(
         device_id=device_id,  # or set to one of the IDs you saw above
         uris=[f"spotify:track:{song_id}"],
     )
+
+
+def play_spotify_track(spotify_query: str):
+    """
+    Plays a song on Spotify.
+    The spotify_query should be a string that represents the song to be played.
+    Examples:
+    - "Bohemian Rhapsody Queen"
+    - "track:Doxy artist:Miles Davis".
+    - "genre:jazz year:1960-1970"
+    """
+    import logging
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        filename="spotify_playback.log",  # Log to a file named spotify_playback.log
+        filemode="a",  # Append to the file if it exists
+    )
+
+    logging.info(f"Spotify query: {spotify_query}")
+
+    track_info = search_for_track_id(spotify_query_text, limit=1)
+    start_playback(track_info[0]["id"])
 
 
 if __name__ == "__main__":
